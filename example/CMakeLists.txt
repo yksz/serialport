@@ -1,5 +1,6 @@
 set(examples
     serialport_example
+    serialevent_example
 )
 include_directories(
     ${PROJECT_SOURCE_DIR}/src

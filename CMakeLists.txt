@@ -12,10 +12,12 @@ option(build_examples "Build example programs" OFF)
 if(WIN32)
     set(source_files ${source_files}
         ${PROJECT_SOURCE_DIR}/src/serialport_windows.c
+        ${PROJECT_SOURCE_DIR}/src/serialevent_windows.c
     )
 else() # UNIX
     set(source_files ${source_files}
         ${PROJECT_SOURCE_DIR}/src/serialport_unix.c
+        ${PROJECT_SOURCE_DIR}/src/serialevent_unix.c
     )
 endif()
 include_directories(
