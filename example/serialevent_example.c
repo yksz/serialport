@@ -5,9 +5,12 @@
 static void onReceived(SerialPort* serial)
 {
     char buf[8192] = {0};
+    int nbytes;
 
-    SerialPort_read(serial, buf, sizeof(buf));
-    printf("%s", buf);
+    nbytes = SerialPort_read(serial, buf, sizeof(buf) - 1);
+    if (nbytes > 0) {
+        printf("%s", buf);
+    }
 }
 
 int main(int argc, char** argv)

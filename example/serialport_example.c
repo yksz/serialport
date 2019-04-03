@@ -30,10 +30,12 @@ int main(int argc, char** argv)
     }
     while (1) {
         memset(buf, 0, sizeof(buf));
-        nbytes = SerialPort_read(&serial, buf, sizeof(buf));
-        if (nbytes > 0) {
-            printf("%s", buf);
+        nbytes = SerialPort_read(&serial, buf, sizeof(buf) - 1);
+        if (nbytes < 0) {
+            perror("Could not read");
+            break;
         }
+        printf("%s", buf);
         Sleep(1000);
     }
     SerialPort_close(&serial);
