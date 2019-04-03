@@ -62,7 +62,7 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
     assert(serial != NULL);
     assert(portName != NULL);
 
-    sprintf_s(newPortName, sizeof(16), "\\\\.\\%s", portName);
+    sprintf_s(newPortName, sizeof(newPortName), "\\\\.\\%s", portName);
     serial->fd = CreateFile(newPortName, GENERIC_READ | GENERIC_WRITE,
             0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
     if (serial->fd == INVALID_HANDLE_VALUE) {
