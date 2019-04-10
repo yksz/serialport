@@ -4,7 +4,7 @@
 This is a serial communication library for C89.  
 This works on cross platform.
 
-The main features:
+## Features
 - Notify received events asynchronously
 
 ## Platform

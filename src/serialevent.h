@@ -9,9 +9,24 @@ extern "C" {
 
 typedef void (*SerialDataReceivedHandler)(SerialPort* serial);
 
-int  serialevent_start(void);
+/**
+ * Start the event loop to receive bytes from serial ports.
+ */
+int serialevent_start(void);
+
+/**
+ * Set the event handler called when data is received from a serial port.
+ *
+ * @param[in] handler
+ */
 void serialevent_set(SerialDataReceivedHandler handler);
-int  serialevent_add(SerialPort* serial);
+
+/**
+ * Add a serial port for watching whether data is arrived.
+ *
+ * @param[in] serial
+ */
+int serialevent_add(SerialPort* serial);
 
 #ifdef __cplusplus
 } /* extern "C" */
