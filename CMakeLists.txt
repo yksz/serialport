@@ -33,9 +33,6 @@ install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 file(GLOB header_files src/*.h)
 install(FILES ${header_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 
-### Document
-add_custom_target(doc COMMAND "doxygen" "${PROJECT_SOURCE_DIR}/doc/Doxyfile")
-
 ### Test
 if(build_tests)
     enable_testing()
