@@ -1,16 +1,16 @@
 #ifndef SERIALPORT_H
 #define SERIALPORT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <stddef.h>
 #if defined(_WIN32) || defined(_WIN64)
  #include <windows.h>
 #else
  #include <termios.h>
 #endif /* defined(_WIN32) || defined(_WIN64) */
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct serialport {
 #if defined(_WIN32) || defined(_WIN64)

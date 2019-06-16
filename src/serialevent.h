@@ -1,11 +1,11 @@
 #ifndef SERIALEVENT_H
 #define SERIALEVENT_H
 
+#include "serialport.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-#include "serialport.h"
 
 typedef void (*SerialDataReceivedHandler)(SerialPort* serial);
 
