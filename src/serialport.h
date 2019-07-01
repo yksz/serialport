@@ -23,6 +23,8 @@ typedef struct serialport {
 } SerialPort;
 
 /**
+ * Open a new serial port connection.
+ *
  * @param[in] serial
  * @param[in] portName
  * @param[in] baudRate
@@ -31,12 +33,16 @@ typedef struct serialport {
 int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudRate);
 
 /**
+ * Close the serial port connection.
+ *
  * @param[in] serial
  * @return 0 on success or a non-zero value on error
  */
 int SerialPort_close(SerialPort* serial);
 
 /**
+ * Read data from the serial port.
+ *
  * @param[in] serial
  * @param[in] buf
  * @param[in] len
@@ -45,6 +51,8 @@ int SerialPort_close(SerialPort* serial);
 int SerialPort_read(SerialPort* serial, char* buf, size_t len);
 
 /**
+ * Write data to the serial port.
+ *
  * @param[in] serial
  * @param[in] buf
  * @param[in] len
@@ -53,6 +61,8 @@ int SerialPort_read(SerialPort* serial, char* buf, size_t len);
 int SerialPort_write(SerialPort* serial, const char* buf, size_t len);
 
 /**
+ * Force all buffered data to the serial port.
+ *
  * @param[in] serial
  * @return 0 on success or a non-zero value on error
  */

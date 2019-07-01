@@ -11,6 +11,8 @@ typedef void (*SerialDataReceivedHandler)(SerialPort* serial);
 
 /**
  * Start the event loop to receive bytes from serial ports.
+ *
+ * @return 0 on success or a non-zero value on error
  */
 int serialevent_start(void);
 
@@ -25,6 +27,7 @@ void serialevent_set(SerialDataReceivedHandler handler);
  * Add a serial port for watching whether data is arrived.
  *
  * @param[in] serial
+ * @return 0 on success or a non-zero value on error
  */
 int serialevent_add(SerialPort* serial);
 
