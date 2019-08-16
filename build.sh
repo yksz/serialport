@@ -10,6 +10,7 @@ cd ${DIRNAME}
 
 cmake \
     -DCMAKE_BUILD_TYPE=Release \
+    -Dbuild_tests=ON \
     -Dbuild_examples=ON \
     $@ \
     ..

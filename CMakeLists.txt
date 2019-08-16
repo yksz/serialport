@@ -35,7 +35,6 @@ install(FILES ${header_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 
 ### Test
 if(build_tests)
-    enable_testing()
     add_subdirectory(test)
 endif()
 

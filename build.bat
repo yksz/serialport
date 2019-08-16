@@ -9,6 +9,7 @@ if not exist %DIRNAME% (
 cd %DIRNAME%
 
 cmake -G "Visual Studio 14" ^
+    -Dbuild_tests=ON ^
     -Dbuild_examples=ON ^
     ..
 cmake --build . --config Release
