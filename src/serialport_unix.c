@@ -59,10 +59,13 @@ static void setBaudRate(struct termios* io, unsigned int baudRate)
 
 int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudRate)
 {
+    int nonblocking;
+
     assert(serial != NULL);
     assert(portName != NULL);
 
-    serial->fd = open(portName, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    nonblocking = serial->blocking ? 0 : O_NONBLOCK;
+    serial->fd = open(portName, O_RDWR | O_NOCTTY | nonblocking);
     if (serial->fd < 0) {
         return -1;
     }
@@ -71,7 +74,7 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
     serial->io.c_oflag = 0;
     serial->io.c_cflag = CS8 | CLOCAL | CREAD;
     serial->io.c_lflag = 0;
-    serial->io.c_cc[VMIN] = 0;
+    serial->io.c_cc[VMIN] = nonblocking ? 0 : 1;
     serial->io.c_cc[VTIME] = 0;
     setBaudRate(&serial->io, baudRate);
     tcsetattr(serial->fd, TCSAFLUSH, &serial->io);

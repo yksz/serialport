@@ -13,6 +13,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 typedef struct serialport {
+    int blocking;
 #if defined(_WIN32) || defined(_WIN64)
     HANDLE fd;
     OVERLAPPED overlapped;

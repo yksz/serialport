@@ -57,14 +57,16 @@ static void setBaudRate(DCB* dcb, unsigned int baudRate)
 int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudRate)
 {
     char newPortName[16] = {0};
+    DWORD flagsAndAttrs;
     DCB dcb = {0};
 
     assert(serial != NULL);
     assert(portName != NULL);
 
     sprintf_s(newPortName, sizeof(newPortName), "\\\\.\\%s", portName);
+    flagsAndAttrs = serial->blocking ? FILE_ATTRIBUTE_NORMAL : FILE_FLAG_OVERLAPPED;
     serial->fd = CreateFile(newPortName, GENERIC_READ | GENERIC_WRITE,
-            0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
+            0, NULL, OPEN_EXISTING, flagsAndAttrs, NULL);
     if (serial->fd == INVALID_HANDLE_VALUE) {
         return -1;
     }
