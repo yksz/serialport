@@ -15,7 +15,8 @@ extern "C" {
 typedef struct serialport {
 #if defined(_WIN32) || defined(_WIN64)
     HANDLE fd;
-    OVERLAPPED overlapped;
+    OVERLAPPED readOverlapped;
+    OVERLAPPED writeOverlapped;
 #else
     int fd;
     struct termios io;

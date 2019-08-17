@@ -101,7 +101,8 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
     if (serial->fd == INVALID_HANDLE_VALUE) {
         return -1;
     }
-    memset(&serial->overlapped, 0, sizeof(OVERLAPPED));
+    memset(&serial->readOverlapped, 0, sizeof(OVERLAPPED));
+    memset(&serial->writeOverlapped, 0, sizeof(OVERLAPPED));
 
     ok = configure(serial, baudRate);
     if (!ok) {
@@ -132,7 +133,7 @@ int SerialPort_read(SerialPort* serial, char* buf, size_t len)
     assert(serial != NULL);
     assert(buf != NULL);
 
-    ok = ReadFile(serial->fd, buf, len, &nbytes, &serial->overlapped);
+    ok = ReadFile(serial->fd, buf, len, &nbytes, &serial->readOverlapped);
     if (!ok && GetLastError() != ERROR_IO_PENDING) {
         return -1;
     }
@@ -147,7 +148,7 @@ int SerialPort_write(SerialPort* serial, const char* buf, size_t len)
     assert(serial != NULL);
     assert(buf != NULL);
 
-    ok = WriteFile(serial->fd, buf, len, &nbytes, &serial->overlapped);
+    ok = WriteFile(serial->fd, buf, len, &nbytes, &serial->writeOverlapped);
     if (!ok && GetLastError() != ERROR_IO_PENDING) {
         return -1;
     }
