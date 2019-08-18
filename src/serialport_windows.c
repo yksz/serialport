@@ -108,6 +108,12 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
         SerialPort_close(serial);
         return -1;
     }
+    /* clear buffers */
+    ok = PurgeComm(serial->fd, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT);
+    if (!ok) {
+        SerialPort_close(serial);
+        return -1;
+    }
     return 0;
 }
 
