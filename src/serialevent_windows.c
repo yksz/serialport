@@ -28,14 +28,14 @@ int serialevent_start(void)
     }
 
     for (i = 0; i < s_serials.size; i++) {
-        memset(&s_serials.ports[i].overlapped, 0, sizeof(OVERLAPPED));
-        s_serials.ports[i].overlapped.hEvent = s_serials.events[i];
+        memset(&s_serials.ports[i].readOverlapped, 0, sizeof(OVERLAPPED));
+        s_serials.ports[i].readOverlapped.hEvent = s_serials.events[i];
         SetCommMask(s_serials.ports[i].fd, EV_RXCHAR);
     }
 
     while (1) {
         for (i = 0; i < s_serials.size; i++) {
-            WaitCommEvent(s_serials.ports[i].fd, &eventmask, &s_serials.ports[i].overlapped);
+            WaitCommEvent(s_serials.ports[i].fd, &eventmask, &s_serials.ports[i].readOverlapped);
         }
         ready = WaitForMultipleObjects(s_serials.size, s_serials.events, FALSE, INFINITE);
         switch (ready) {

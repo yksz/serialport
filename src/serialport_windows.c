@@ -54,10 +54,43 @@ static void setBaudRate(DCB* dcb, unsigned int baudRate)
     dcb->BaudRate = speed;
 }
 
+static BOOL setTimeout(SerialPort* serial)
+{
+    COMMTIMEOUTS timeouts = {0};
+
+    timeouts.ReadIntervalTimeout = MAXDWORD;
+    return SetCommTimeouts(serial->fd, &timeouts);
+}
+
+static BOOL configure(SerialPort* serial, unsigned int baudRate)
+{
+    DCB dcb = {0};
+    BOOL ok;
+
+    ok = GetCommState(serial->fd, &dcb);
+    if (!ok) {
+        return FALSE;
+    }
+    dcb.DCBlength = sizeof(DCB);
+    setBaudRate(&dcb, baudRate);
+    dcb.fBinary = TRUE;
+    dcb.ByteSize = 8;
+    ok = SetCommState(serial->fd, &dcb);
+    if (!ok) {
+        return FALSE;
+    }
+
+    ok = setTimeout(serial);
+    if (!ok) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
 int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudRate)
 {
     char newPortName[16] = {0};
-    DCB dcb = {0};
+    BOOL ok;
 
     assert(serial != NULL);
     assert(portName != NULL);
@@ -68,10 +101,21 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
     if (serial->fd == INVALID_HANDLE_VALUE) {
         return -1;
     }
-    memset(&serial->overlapped, 0, sizeof(OVERLAPPED));
-    GetCommState(serial->fd, &dcb);
-    setBaudRate(&dcb, baudRate);
-    return !SetCommState(serial->fd, &dcb);
+    memset(&serial->readOverlapped, 0, sizeof(OVERLAPPED));
+    memset(&serial->writeOverlapped, 0, sizeof(OVERLAPPED));
+
+    ok = configure(serial, baudRate);
+    if (!ok) {
+        SerialPort_close(serial);
+        return -1;
+    }
+    /* clear buffers */
+    ok = PurgeComm(serial->fd, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT);
+    if (!ok) {
+        SerialPort_close(serial);
+        return -1;
+    }
+    return 0;
 }
 
 int SerialPort_close(SerialPort* serial)
@@ -89,7 +133,7 @@ int SerialPort_read(SerialPort* serial, char* buf, size_t len)
     assert(serial != NULL);
     assert(buf != NULL);
 
-    ok = ReadFile(serial->fd, buf, len, &nbytes, &serial->overlapped);
+    ok = ReadFile(serial->fd, buf, len, &nbytes, &serial->readOverlapped);
     if (!ok && GetLastError() != ERROR_IO_PENDING) {
         return -1;
     }
@@ -104,7 +148,7 @@ int SerialPort_write(SerialPort* serial, const char* buf, size_t len)
     assert(serial != NULL);
     assert(buf != NULL);
 
-    ok = WriteFile(serial->fd, buf, len, &nbytes, &serial->overlapped);
+    ok = WriteFile(serial->fd, buf, len, &nbytes, &serial->writeOverlapped);
     if (!ok && GetLastError() != ERROR_IO_PENDING) {
         return -1;
     }
