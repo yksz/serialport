@@ -54,6 +54,14 @@ static void setBaudRate(DCB* dcb, unsigned int baudRate)
     dcb->BaudRate = speed;
 }
 
+static BOOL setTimeout(SerialPort* serial)
+{
+    COMMTIMEOUTS timeouts = {0};
+
+    timeouts.ReadIntervalTimeout = MAXDWORD;
+    return SetCommTimeouts(serial->fd, &timeouts);
+}
+
 static BOOL configure(SerialPort* serial, unsigned int baudRate)
 {
     DCB dcb = {0};
@@ -68,6 +76,11 @@ static BOOL configure(SerialPort* serial, unsigned int baudRate)
     dcb.fBinary = TRUE;
     dcb.ByteSize = 8;
     ok = SetCommState(serial->fd, &dcb);
+    if (!ok) {
+        return FALSE;
+    }
+
+    ok = setTimeout(serial);
     if (!ok) {
         return FALSE;
     }
