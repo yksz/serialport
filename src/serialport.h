@@ -26,6 +26,8 @@ typedef struct serialport {
 /**
  * Open a new serial port connection.
  *
+ * Use errno or GetLastError() if you want to know a error in detail.
+ *
  * @param[in] serial
  * @param[in] portName
  * @param[in] baudRate
@@ -36,6 +38,8 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
 /**
  * Close the serial port connection.
  *
+ * Use errno or GetLastError() if you want to know a error in detail.
+ *
  * @param[in] serial
  * @return 0 on success or a non-zero value on error
  */
@@ -43,6 +47,8 @@ int SerialPort_close(SerialPort* serial);
 
 /**
  * Read data from the serial port.
+ *
+ * Use errno or GetLastError() if you want to know a error in detail.
  *
  * @param[in] serial
  * @param[in] buf
@@ -54,6 +60,8 @@ int SerialPort_read(SerialPort* serial, char* buf, size_t len);
 /**
  * Write data to the serial port.
  *
+ * Use errno or GetLastError() if you want to know a error in detail.
+ *
  * @param[in] serial
  * @param[in] buf
  * @param[in] len
@@ -63,6 +71,8 @@ int SerialPort_write(SerialPort* serial, const char* buf, size_t len);
 
 /**
  * Force all buffered data to the serial port.
+ *
+ * Use errno or GetLastError() if you want to know a error in detail.
  *
  * @param[in] serial
  * @return 0 on success or a non-zero value on error
