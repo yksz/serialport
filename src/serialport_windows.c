@@ -9,6 +9,7 @@ enum {
 static void setBaudRate(DCB* dcb, unsigned int baudRate)
 {
     DWORD speed;
+
     switch (baudRate) {
         case 110:
             speed = CBR_110;
@@ -120,9 +121,15 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
 
 int SerialPort_close(SerialPort* serial)
 {
+    BOOL ok;
+
     assert(serial != NULL);
 
-    return !CloseHandle(serial->fd);
+    ok = CloseHandle(serial->fd);
+    if (!ok) {
+        return -1;
+    }
+    return 0;
 }
 
 int SerialPort_read(SerialPort* serial, char* buf, size_t len)
@@ -157,7 +164,13 @@ int SerialPort_write(SerialPort* serial, const char* buf, size_t len)
 
 int SerialPort_flush(SerialPort* serial)
 {
+    BOOL ok;
+
     assert(serial != NULL);
 
-    return !FlushFileBuffers(serial->fd);
+    ok = FlushFileBuffers(serial->fd);
+    if (!ok) {
+        return -1;
+    }
+    return 0;
 }

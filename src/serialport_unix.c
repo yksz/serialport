@@ -11,6 +11,7 @@ enum {
 static void setBaudRate(struct termios* io, unsigned int baudRate)
 {
     speed_t speed;
+
     switch (baudRate) {
         case 110:
             speed = B110;
