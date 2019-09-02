@@ -3,7 +3,8 @@
 #include <stdio.h>
 
 enum {
-    kDefaultBaudRate = CBR_9600
+    kDefaultBaudRate = CBR_9600,
+    kAsyncWriteTimeoutMilliseconds = 20,
 };
 
 static void setBaudRate(DCB* dcb, unsigned int baudRate)
@@ -60,6 +61,7 @@ static BOOL setTimeout(SerialPort* serial)
     COMMTIMEOUTS timeouts = {0};
 
     timeouts.ReadIntervalTimeout = MAXDWORD;
+    timeouts.WriteTotalTimeoutConstant = kAsyncWriteTimeoutMilliseconds;
     return SetCommTimeouts(serial->fd, &timeouts);
 }
 
@@ -162,6 +164,9 @@ int SerialPort_write(SerialPort* serial, const char* buf, size_t len)
     ok = WriteFile(serial->fd, buf, len, &nbytes, &serial->writeOverlapped);
     if (!ok && GetLastError() != ERROR_IO_PENDING) {
         return -1;
+    }
+    if (GetLastError() == ERROR_IO_PENDING) {
+        GetOverlappedResult(serial->fd, &serial->writeOverlapped, &nbytes, TRUE);
     }
     return nbytes;
 }
