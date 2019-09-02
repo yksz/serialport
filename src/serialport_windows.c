@@ -104,6 +104,8 @@ int SerialPort_open(SerialPort* serial, const char* portName, unsigned int baudR
     }
     memset(&serial->readOverlapped, 0, sizeof(OVERLAPPED));
     memset(&serial->writeOverlapped, 0, sizeof(OVERLAPPED));
+    serial->readOverlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    serial->writeOverlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
     ok = configure(serial, baudRate);
     if (!ok) {
@@ -125,6 +127,8 @@ int SerialPort_close(SerialPort* serial)
 
     assert(serial != NULL);
 
+    CloseHandle(serial->readOverlapped.hEvent);
+    CloseHandle(serial->writeOverlapped.hEvent);
     ok = CloseHandle(serial->fd);
     if (!ok) {
         return -1;

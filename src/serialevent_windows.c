@@ -28,8 +28,6 @@ int serialevent_start(void)
     }
 
     for (i = 0; i < s_serials.size; i++) {
-        memset(&s_serials.ports[i].readOverlapped, 0, sizeof(OVERLAPPED));
-        s_serials.ports[i].readOverlapped.hEvent = s_serials.events[i];
         SetCommMask(s_serials.ports[i].fd, EV_RXCHAR);
     }
 
@@ -46,7 +44,7 @@ int serialevent_start(void)
                 return -1;
         }
         index = ready - WAIT_OBJECT_0;
-        if (index < s_serials.size && eventmask & EV_RXCHAR) {
+        if (index < s_serials.size && (eventmask & EV_RXCHAR)) {
             s_onReceived(&s_serials.ports[index]);
         }
     }
@@ -68,7 +66,7 @@ int serialevent_add(SerialPort* serial)
     }
 
     s_serials.ports[s_serials.size] = *serial;
-    s_serials.events[s_serials.size] = CreateEvent(NULL, TRUE, FALSE, NULL);
+    s_serials.events[s_serials.size] = serial->readOverlapped.hEvent;
     s_serials.size++;
     return 0;
 }
